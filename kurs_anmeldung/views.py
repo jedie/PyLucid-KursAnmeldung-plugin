@@ -15,20 +15,19 @@
     :license: GNU GPL v3 or above, see LICENSE for more details
 """
 
-__version__ = "$Rev: $"
-
 import datetime
 
 from django.conf import settings
+from django.contrib import messages
+from django.core.mail import SMTPConnection, EmailMessage
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
-from django.utils.safestring import mark_safe
-from django.core.mail import SMTPConnection, EmailMessage
 from django.template.loader import render_to_string
+from django.utils.safestring import mark_safe
 
-from pylucid_project.utils import crypt
-from pylucid_project.apps.pylucid.models import LogEntry
 from pylucid_project.apps.pylucid.decorators import render_to
+from pylucid_project.apps.pylucid.models import LogEntry
+from pylucid_project.utils import crypt
 
 from kurs_anmeldung.models import Kurs, KursAnmeldung
 from kurs_anmeldung.preference_forms import KursAnmeldungPrefForm
@@ -44,15 +43,19 @@ def _get_context_pref():
 
 def _is_active(request, preferences):
     """
-    return True/False for "courses registration is diabled" response
+    return True/False for "courses registration is disabled" response
     """
     if not preferences["active"]:
-        # Disabled by DBpreferences
+        if request.user.is_staff:
+            messages.debug(request, "Disabled by DBpreferences.")
         return False
+
     active_courses = Kurs.objects.all().filter(active=True).count()
     if active_courses == 0:
-        # No active courses found
+        if request.user.is_staff:
+            messages.debug(request, "No active courses found.")
         return False
+
     return True
 
 
@@ -82,7 +85,7 @@ def verify_email(request, hash):
         return context
 
     if entry.verified == True:
-        request.page_msg(u"Hinweis: Deine Anmeldung wurde bereits bestätigt.")
+        messages.info(request, u"Hinweis: Deine Anmeldung wurde bereits bestätigt.")
 
     entry.verified = True
     entry.log(request, "verified via email hash link")
@@ -125,15 +128,15 @@ def _send_verify_email(request, preferences, db_entry, rnd_hash, new_entry):
 
     if settings.KURS_ANMELDUNG.MAIL_DEBUG == True:
         msg = u"MAIL_DEBUG is on: No Email was sended!"
-        request.page_msg(msg)
+        messages.debug(request, msg)
         db_entry.log(request, msg)
         db_entry.mail_sended = False
 
-        request.page_msg("django.core.mail.EmailMessage kwargs:")
-        request.page_msg(email_kwargs)
+        messages.debug(request, "django.core.mail.EmailMessage kwargs:")
+        messages.debug(request, repr(email_kwargs))
 
-        request.page_msg("debug mail text:")
-        request.page_msg(mark_safe("<pre>%s</pre>" % emailtext))
+        messages.debug(request, "debug mail text:")
+        messages.debug(request, mark_safe("<pre>%s</pre>" % emailtext))
         return
 
     # We can't use django.core.mail.send_mail, because all members
@@ -182,7 +185,7 @@ def register(request):
 
     if request.method == 'POST':
         form = KursAnmeldungForm(request.POST)
-        #self.page_msg(self.request.POST)
+        #messages.debug(request, repr(request.POST))
         if form.is_valid():
             # Create, but don't save the new instance.
             new_entry = form.save(commit=False)
