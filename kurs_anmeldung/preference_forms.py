@@ -46,6 +46,15 @@ class KursAnmeldungPrefForm(DBPreferencesBaseForm):
         initial="Anmeldung",
         help_text=_("Witch link title should be used?")
     )
+    disable_text = forms.CharField(
+        initial="<p>Kursanmeldung ist deaktiviert, versuche es später wieder.</p>",
+        help_text=_("HTML code witch used as response, if course registration is disabled."),
+        widget=forms.Textarea(),
+    )
+    active = forms.BooleanField(required=False,
+        initial=True,
+        help_text=_("Is the registration active or disabled?")
+    )
 
     class Meta:
         app_label = 'kurs_anmeldung'

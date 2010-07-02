@@ -53,20 +53,6 @@ class KursAnmeldung(UpdateInfoBaseModel):
         createby       -> ForeignKey to user who creaded this entry
         lastupdateby   -> ForeignKey to user who has edited this entry
     """
-    WARTELISTE = (
-        ("-", "Habe mich vorher noch nicht für diesen Kurs eingeschrieben."),
-        ("SS07", "SS 2007"),
-        ("WS07/08", "WS 2007/2008"),
-        ("SS08", "SS 2008"),
-        ("WS08/09", "WS 2008/2009"),
-        ("SS09", "SS 2009"),
-        ("WS09/10", "WS 2009/2010"),
-        (
-            "unbekannt",
-            "Hatte mich schon einmal eingetragen, weiß aber nicht mehr wann."
-        ),
-    )
-
     vorname = models.CharField(verbose_name="Vorname", max_length=128)
     nachname = models.CharField(verbose_name="Nachname", max_length=128)
     email = models.EmailField(
@@ -97,7 +83,7 @@ class KursAnmeldung(UpdateInfoBaseModel):
             "Stehst du schon in der Warteliste?"
             " In welchem Semester hattest du dich schon angemeldet?"
         ),
-        max_length=128, choices=WARTELISTE,
+        max_length=128, choices=settings.KURS_ANMELDUNG.WARTELISTE,
     )
     note = models.TextField(
         null=True, blank=True,
@@ -116,10 +102,12 @@ class KursAnmeldung(UpdateInfoBaseModel):
         """
         message_dict = {}
 
-        if "semester" not in exclude and self.semester > 30:
+        if "semester" not in exclude and self.semester > settings.KURS_ANMELDUNG.MAX_SEMESTER:
             message_dict["semester"] = ('Semester Wert scheint falsch zu sein.',)
 
-        if "matrikel_nr" not in exclude and (self.matrikel_nr < 10000 or self.matrikel_nr > 1000000):
+        if "matrikel_nr" not in exclude and (
+            self.matrikel_nr < settings.KURS_ANMELDUNG.MIN_MATRIKEL_NR
+            or self.matrikel_nr > settings.KURS_ANMELDUNG.MAX_MATRIKEL_NR):
             message_dict["matrikel_nr"] = ('Die Matrikel Nummer scheint falsch zu sein.',)
 
         if message_dict:

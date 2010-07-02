@@ -1,6 +1,7 @@
 h1. PyLucid-KursAnmeldung-plugin
 
 
+
 h2. info
 
 PyLucid plugin for student registration.
@@ -8,12 +9,14 @@ PyLucid plugin for student registration.
 This plugin is not generalized and many parts are in german!
 
 
+
 h2. Project homepage
 
 http://github.com/jedie/PyLucid-KursAnmeldung-plugin
 
 
-h2. install
+
+h2. install plugin
 
 Quick how to install the plugin into pylucid:
 
@@ -25,6 +28,39 @@ pre. ~$ mkdir pylucid_plugins
 If you don't have git, but subversion, you can checkout with this command:
 
 pre. ~/pylucid_plugins$ svn checkout http://svn.github.com/jedie/PyLucid-KursAnmeldung-plugin.git
+
+
+
+h2. use in PyLucid
+
+Add DEFAULT_FROM_EMAIL in your settings.
+
+Create a "kurs_anmeldung" PluginPage under:
+
+ * PyLucid admin menu / create content /  new plugin page
+ 
+select App label: "external_plugins.kurs_anmeldung"
+
+put this into your local_settings.py:
+
+pre. # import the 'Foo' app settings
+from kurs_anmeldung import kurs_anmeldung_settings as KURS_ANMELDUNG
+# example overwrite settings:
+KURS_ANMELDUNG.FOO = 20
+KURS_ANMELDUNG.BAR = True
+
+Available settings, look in: /kurs_anmeldung/kurs_anmeldung_settings.py
+
+Create new course under:
+
+ * Django admin site / Kurs_Anmeldung / Kurse / Add
+
+The Plugin used preferences, too. Edit them here:
+
+ * Django admin site / Dbpreferences / Preferences / kurs_anmeldung / edit preferences
+
+(Note: The preferences would be created after the first request!)
+
 
 
 h2. update

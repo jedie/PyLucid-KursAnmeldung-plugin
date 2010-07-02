@@ -30,14 +30,9 @@ from pylucid_project.utils import crypt
 from pylucid_project.apps.pylucid.models import LogEntry
 from pylucid_project.apps.pylucid.decorators import render_to
 
-from kurs_anmeldung.models import KursAnmeldung
+from kurs_anmeldung.models import Kurs, KursAnmeldung
 from kurs_anmeldung.preference_forms import KursAnmeldungPrefForm
 from kurs_anmeldung.forms import KursAnmeldungForm
-
-
-# Don't send mails, display them only.
-#MAIL_DEBUG = True
-MAIL_DEBUG = False
 
 
 def _get_context_pref():
@@ -45,6 +40,21 @@ def _get_context_pref():
     preferences = pref_form.get_preferences()
     context = {"title": preferences["title"]}
     return context, preferences
+
+
+def _is_active(request, preferences):
+    """
+    return True/False for "courses registration is diabled" response
+    """
+    if not preferences["active"]:
+        # Disabled by DBpreferences
+        return False
+    active_courses = Kurs.objects.all().filter(active=True).count()
+    if active_courses == 0:
+        # No active courses found
+        return False
+    return True
+
 
 
 @render_to("kurs_anmeldung/verified.html")
@@ -113,7 +123,7 @@ def _send_verify_email(request, preferences, db_entry, rnd_hash, new_entry):
         "bcc": notify_list,
     }
 
-    if MAIL_DEBUG == True:
+    if settings.KURS_ANMELDUNG.MAIL_DEBUG == True:
         msg = u"MAIL_DEBUG is on: No Email was sended!"
         request.page_msg(msg)
         db_entry.log(request, msg)
@@ -163,6 +173,13 @@ def register(request):
     """
     context, preferences = _get_context_pref()
 
+    is_active = _is_active(request, preferences)
+    if not is_active:
+        # Course registration is disabled by preferences
+        # or there exist no active course 
+        disable_text = preferences["disable_text"]
+        return mark_safe(disable_text)
+
     if request.method == 'POST':
         form = KursAnmeldungForm(request.POST)
         #self.page_msg(self.request.POST)
@@ -192,6 +209,7 @@ def register(request):
         form = KursAnmeldungForm()
 
     context["form"] = form
+    context["url"] = request.path
     return context
 
 
