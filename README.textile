@@ -1,0 +1,38 @@
+h1. PyLucid-KursAnmeldung-plugin
+
+
+h2. info
+
+PyLucid plugin for student registration.
+
+This plugin is not generalized and many parts are in german!
+
+
+h2. Project homepage
+
+http://github.com/jedie/PyLucid-KursAnmeldung-plugin
+
+
+h2. install
+
+Quick how to install the plugin into pylucid:
+
+pre. ~$ mkdir pylucid_plugins
+~$ cd pylucid_plugins
+~/pylucid_plugins$ git clone git://github.com/jedie/PyLucid-KursAnmeldung-plugin.git
+~/pylucid_plugins$ ln -s ~/pylucid_plugins/PyLucid-KursAnmeldung-plugin/kurs_anmeldung ~/PyLucid_env/src/pylucid/pylucid_project/external_plugins/
+
+If you don't have git, but subversion, you can checkout with this command:
+
+pre. ~/pylucid_plugins$ svn checkout http://svn.github.com/jedie/PyLucid-KursAnmeldung-plugin.git
+
+
+h2. update
+
+How to update the plugin, do this:
+
+pre. ~$ cd pylucid_plugins/PyLucid-KursAnmeldung-plugin
+~/pylucid_plugins/PyLucid-KursAnmeldung-plugin$ chmod +x update.sh
+~/pylucid_plugins/PyLucid-KursAnmeldung-plugin$ ./update.sh
+
+the update script runs "git pull origin master" or "svn update"
