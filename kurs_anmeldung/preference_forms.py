@@ -8,7 +8,7 @@ from django.utils.translation import ugettext as _
 
 from dbpreferences.forms import DBPreferencesBaseForm
 
-from pylucid_project.apps.pylucid.shortcuts import failsafe_message
+from django_tools.utils.messages import failsafe_message
 
 
 try:
