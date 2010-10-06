@@ -1,0 +1,8 @@
+{% extends "kurs_anmeldung/template_base.html" %}
+
+{% block content %}
+<textarea cols=50 rows=20>
+{% for anmeldung in queryset %}{{ anmeldung.vorname }} {{ anmeldung.nachname }} &lt;{{ anmeldung.email }}&gt;
+{% endfor %}
+</textarea>
+{% endblock content %}
