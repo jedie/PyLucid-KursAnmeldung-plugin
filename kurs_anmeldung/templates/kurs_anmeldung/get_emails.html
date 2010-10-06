@@ -1,8 +1,13 @@
 {% extends "kurs_anmeldung/template_base.html" %}
 
 {% block content %}
+{% for kurs in kurse %}
+    <h2>{{ kurs.name }} - ({% if not kurs.active %}<strong>not</strong> {% endif %}active)</h2>
+
 <textarea cols=50 rows=20>
-{% for email in emails %}
-{{ email }}{% endfor %}
+{% for anmeldung in kurs.kurs_wahl.all %}{{ anmeldung.vorname }} {{ anmeldung.nachname }} &lt;{{ anmeldung.email }}&gt;
+{% endfor %}
 </textarea>
+
+{% endfor %}
 {% endblock content %}

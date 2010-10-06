@@ -5,7 +5,7 @@ from django.conf import settings
 
 from reversion.admin import VersionAdmin
 
-from external_plugins.kurs_anmeldung.models import Kurs, KursAnmeldung
+from kurs_anmeldung.models import Kurs, KursAnmeldung
 
 
 class KursAdmin(VersionAdmin):

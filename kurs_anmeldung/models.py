@@ -9,7 +9,7 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.sites.managers import CurrentSiteManager
 
-from pylucid_project.apps.pylucid.models.base_models import AutoSiteM2M, UpdateInfoBaseModel
+from pylucid_project.apps.pylucid.models.base_models import UpdateInfoBaseModel
 
 
 class Kurs(UpdateInfoBaseModel):
@@ -34,12 +34,14 @@ class Kurs(UpdateInfoBaseModel):
 
     site = models.ForeignKey(Site, editable=False, default=settings.SITE_ID)
     on_site = CurrentSiteManager('site')
+    objects = models.Manager()
 
     def __unicode__(self):
         return u"Kurs %s" % (self.name)
 
     class Meta:
         verbose_name_plural = "Kurse"
+        ordering = ("-lastupdatetime",)
 
 
 
@@ -131,3 +133,4 @@ class KursAnmeldung(UpdateInfoBaseModel):
     class Meta:
         unique_together = ("vorname", "nachname", "email")
         verbose_name_plural = "Kurs Anmeldungen"
+        ordering = ("-lastupdatetime",)

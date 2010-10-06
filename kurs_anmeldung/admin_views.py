@@ -47,30 +47,20 @@ ALL_PERMISSIONS = (
 @check_permissions(superuser_only=False, permissions=ALL_PERMISSIONS)
 @render_to("kurs_anmeldung/get_emails.html")
 def get_emails(request):
-    queryset = KursAnmeldung.objects.all()
-    queryset = queryset.filter(kurs_wahl__site=settings.SITE_ID)
-    emails = queryset.values_list('email', flat=True)
+    kurse = Kurs.on_site.all()
     context = {
         "title": _("All emails"),
-        "emails": emails,
+        "kurse": kurse,
     }
     return context
 
 @check_permissions(superuser_only=False, permissions=ALL_PERMISSIONS)
 @render_to("kurs_anmeldung/csv_export.html")
 def csv_export(request):
-#    data = []
-    kurse = Kurs.on_site.filter(active=True)
-#    for kurs in kurse:
-#        anmeldungen = kurs.kurs_wahl.all()
-#        data.append({
-#            "kurs": kurs,
-#            "anmeldungen": anmeldungen,
-#        })
+    kurse = Kurs.on_site.all()
 
     context = {
         "title": _("CSV export"),
-#        "data": data,
         "kurse": kurse,
     }
     return context
