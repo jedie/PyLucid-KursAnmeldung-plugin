@@ -198,6 +198,8 @@ def register(request):
             # Save new log entries
             new_entry.save()
 
+            messages.success(request, message="data saved")
+
             new_location = reverse("KursAnmeldung-register_done")
             return HttpResponseRedirect(new_location)
     else:
