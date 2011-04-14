@@ -4,14 +4,7 @@
     Kurs Anmeldung
     ~~~~~~~~~~~~~~
 
-
-    Last commit info:
-    ~~~~~~~~~
-    $LastChangedDate: $
-    $Rev: $
-    $Author: JensDiemer $
-
-    :copyleft: 2009-2010 by Jens Diemer
+    :copyleft: 2009-2011 by Jens Diemer
     :license: GNU GPL v3 or above, see LICENSE for more details
 """
 
@@ -19,7 +12,7 @@ import datetime
 
 from django.conf import settings
 from django.contrib import messages
-from django.core.mail import SMTPConnection, EmailMessage
+from django.core.mail.message import EmailMessage
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.template.loader import render_to_string
@@ -34,6 +27,7 @@ from kurs_anmeldung.preference_forms import KursAnmeldungPrefForm
 from kurs_anmeldung.forms import KursAnmeldungForm
 
 
+
 def _get_context_pref():
     pref_form = KursAnmeldungPrefForm()
     preferences = pref_form.get_preferences()
@@ -46,14 +40,12 @@ def _is_active(request, preferences):
     return True/False for "courses registration is disabled" response
     """
     if not preferences["active"]:
-        if request.user.is_staff:
-            messages.debug(request, "Disabled by DBpreferences.")
+        messages.debug(request, "Disabled by DBpreferences.")
         return False
 
     active_courses = Kurs.objects.all().filter(active=True).count()
     if active_courses == 0:
-        if request.user.is_staff:
-            messages.debug(request, "No active courses found.")
+        messages.debug(request, "No active courses found.")
         return False
 
     return True
@@ -143,7 +135,7 @@ def _send_verify_email(request, preferences, db_entry, rnd_hash, new_entry):
     # of the recipient list will see the others in the 'To' field.
     # But we would like to notify the admins via 'Bcc' field.
 
-    connection = SMTPConnection(fail_silently=False)
+#    connection = SMTPConnection(fail_silently=False)
     email = EmailMessage(**email_kwargs)
 
     try:
