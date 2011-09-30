@@ -17,6 +17,7 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
+from django.views.decorators.cache import never_cache
 
 from pylucid_project.apps.pylucid.decorators import render_to
 from pylucid_project.apps.pylucid.models import LogEntry
@@ -51,7 +52,7 @@ def _is_active(request, preferences):
     return True
 
 
-
+@never_cache
 @render_to("kurs_anmeldung/verified.html")
 def verify_email(request, hash):
     """ check a email hash """
@@ -155,12 +156,14 @@ def _send_verify_email(request, preferences, db_entry, rnd_hash, new_entry):
         db_entry.log(request, "mail sended: %s" % sended)
 
 
+@never_cache
 @render_to("kurs_anmeldung/register_done.html")
 def register_done(request):
     context, preferences = _get_context_pref()
     return context
 
 
+@never_cache
 @render_to("kurs_anmeldung/register.html")
 def register(request):
     """
