@@ -118,7 +118,7 @@ def _send_verify_email(request, preferences, db_entry, rnd_hash, new_entry):
         "bcc": notify_list,
     }
 
-    if settings.KURS_ANMELDUNG.MAIL_DEBUG == True:
+    if settings.KURS_ANMELDUNG.MAIL_DEBUG == True or settings.RUN_WITH_DEV_SERVER:
         msg = u"MAIL_DEBUG is on: No Email was sended!"
         messages.debug(request, msg)
         db_entry.log(request, msg)
