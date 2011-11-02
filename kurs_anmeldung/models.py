@@ -9,7 +9,7 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.sites.managers import CurrentSiteManager
 
-from pylucid_project.apps.pylucid.models.base_models import UpdateInfoBaseModel
+from django_tools.models import UpdateInfoBaseModel
 
 
 class Kurs(UpdateInfoBaseModel):
