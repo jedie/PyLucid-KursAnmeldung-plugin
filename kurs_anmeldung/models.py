@@ -32,9 +32,17 @@ class Kurs(UpdateInfoBaseModel):
         help_text="Ist der Kurs aktiv buchbar?"
     )
 
-    site = models.ForeignKey(Site, editable=False, default=settings.SITE_ID)
-    on_site = CurrentSiteManager('site')
+    site = models.ForeignKey(Site)
+    #on_site = CurrentSiteManager('site')
     objects = models.Manager()
+
+    def __init__(self, *args, **kwargs):
+        super(Kurs, self).__init__(*args, **kwargs)
+
+        # default=settings.SITE_ID would be set at startup
+        # This is not right if dynamic SITE_ID used
+        sites_field = self._meta.get_field_by_name("site")[0]
+        sites_field.default = settings.SITE_ID
 
     def __unicode__(self):
         return u"Kurs %s" % (self.name)
