@@ -12,10 +12,6 @@ from django.shortcuts import render_to_response
 from django.template.context import RequestContext
 
 
-
-
-
-
 class KursAdmin(VersionAdmin):
     list_display = ("id", "name", "active", "site")
     list_display_links = ("name",)

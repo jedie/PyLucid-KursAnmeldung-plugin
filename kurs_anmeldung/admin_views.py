@@ -1,18 +1,12 @@
 # coding:utf-8
 
-from django import http
-from django.conf import settings
-from django.contrib.sites.models import Site
 from django.utils.translation import ugettext_lazy as _
 
-from pylucid_project.utils.site_utils import get_site_preselection
-
 from pylucid_project.apps.pylucid.decorators import check_permissions, render_to
-from pylucid_project.apps.pylucid.markup.converter import apply_markup
-
 from pylucid_project.apps.pylucid_admin.admin_menu import AdminMenu
 
-from kurs_anmeldung.models import Kurs, KursAnmeldung
+from .models import Kurs
+
 
 def install(request):
     """ insert PyLucid admin views into PageTree """
@@ -54,11 +48,11 @@ def get_emails(request):
     }
     return context
 
+
 @check_permissions(superuser_only=False, permissions=ALL_PERMISSIONS)
 @render_to("kurs_anmeldung/csv_export.html")
 def csv_export(request):
     kurse = Kurs.on_site.all()
-
     context = {
         "title": _("CSV export"),
         "kurse": kurse,

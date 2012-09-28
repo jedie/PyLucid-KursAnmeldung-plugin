@@ -2,7 +2,7 @@
 
 from django import forms
 
-from external_plugins.kurs_anmeldung.models import Kurs, KursAnmeldung
+from .models import Kurs, KursAnmeldung
 
 class KursForm(forms.ModelForm):
     class Meta:
