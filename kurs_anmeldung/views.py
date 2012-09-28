@@ -32,7 +32,10 @@ from kurs_anmeldung.forms import KursAnmeldungForm
 def _get_context_pref():
     pref_form = KursAnmeldungPrefForm()
     preferences = pref_form.get_preferences()
-    context = {"title": preferences["title"]}
+    context = {
+        "title": preferences["title"],
+        "page_robots": "noindex,nofollow",
+    }
     return context, preferences
 
 
