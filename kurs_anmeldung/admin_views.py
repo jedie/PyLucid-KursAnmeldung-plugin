@@ -41,7 +41,7 @@ ALL_PERMISSIONS = (
 @check_permissions(superuser_only=False, permissions=ALL_PERMISSIONS)
 @render_to("kurs_anmeldung/get_emails.html")
 def get_emails(request):
-    kurse = Kurs.on_site.all()
+    kurse = Kurs.objects.all()
     context = {
         "title": _("All emails"),
         "kurse": kurse,
@@ -52,7 +52,7 @@ def get_emails(request):
 @check_permissions(superuser_only=False, permissions=ALL_PERMISSIONS)
 @render_to("kurs_anmeldung/csv_export.html")
 def csv_export(request):
-    kurse = Kurs.on_site.all()
+    kurse = Kurs.objects.all()
     context = {
         "title": _("CSV export"),
         "kurse": kurse,
