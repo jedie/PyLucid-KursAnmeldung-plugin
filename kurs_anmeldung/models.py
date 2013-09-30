@@ -2,12 +2,13 @@
 
 import datetime
 
-from django.db import models
 from django.conf import settings
 from django.contrib.sites.models import Site
+from django.core.cache import cache
 from django.core.exceptions import ValidationError
+from django.db import models
+from django.utils.functional import lazy
 from django.utils.translation import ugettext_lazy as _
-from django.contrib.sites.managers import CurrentSiteManager
 
 from django_tools.models import UpdateInfoBaseModel
 
@@ -54,6 +55,27 @@ class Kurs(UpdateInfoBaseModel):
 
 
 
+def get_warteliste_choices():
+    """
+    FIXME: Without cache we get many DB queries here :(
+    """
+    cache_key = "KursAnmeldung_Warteliste_choices"
+    choices = cache.get(cache_key)
+    if choices:
+        return choices
+
+    choices = Kurs.objects.filter(active=False).values_list("id", "name")
+    choices = list(choices) # evaluate queryset
+    choices.append(
+        (
+            "unbekannt",
+            "Hatte mich schon einmal eingetragen, weiß aber nicht mehr wann."
+        )
+    )
+    cache.set(cache_key, choices)
+    return choices
+
+
 class KursAnmeldung(UpdateInfoBaseModel):
     """
     TODO: Hinzufügen von "Kursbesucht" oder so...
@@ -94,7 +116,7 @@ class KursAnmeldung(UpdateInfoBaseModel):
             "Stehst du schon in der Warteliste?"
             " In welchem Semester hattest du dich schon angemeldet?"
         ),
-        max_length=128, choices=settings.KURS_ANMELDUNG.WARTELISTE,
+        max_length=128, choices=lazy(get_warteliste_choices, list)()
     )
     note = models.TextField(
         null=True, blank=True,
