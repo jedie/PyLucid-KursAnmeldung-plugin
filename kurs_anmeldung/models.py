@@ -116,6 +116,7 @@ class KursAnmeldung(UpdateInfoBaseModel):
             "Stehst du schon in der Warteliste?"
             " In welchem Semester hattest du dich schon angemeldet?"
         ),
+        blank=True,
         max_length=128, choices=lazy(get_warteliste_choices, list)()
     )
     note = models.TextField(
