@@ -13,7 +13,7 @@ from django_tools.models import UpdateInfoBaseModel
 
 
 class Kurs(UpdateInfoBaseModel):
-    """   
+    """
     e.g.:
     3dsmax - SS 2009 - Vormittags (9-12 Uhr)
     3dsmax - SS 2009 - Nachmittags (13-16 Uhr)
@@ -33,8 +33,9 @@ class Kurs(UpdateInfoBaseModel):
     )
 
     site = models.ForeignKey(Site)
-    #on_site = CurrentSiteManager('site')
+    # on_site = CurrentSiteManager('site')
     objects = models.Manager()
+    # default_manager = models.Manager()
 
     def __init__(self, *args, **kwargs):
         super(Kurs, self).__init__(*args, **kwargs)
@@ -56,7 +57,7 @@ class Kurs(UpdateInfoBaseModel):
 class KursAnmeldung(UpdateInfoBaseModel):
     """
     TODO: Hinzufügen von "Kursbesucht" oder so...
-    
+
     inherited attributes from UpdateInfoBaseModel:
         createtime     -> datetime of creation
         lastupdatetime -> datetime of the last change
@@ -67,7 +68,7 @@ class KursAnmeldung(UpdateInfoBaseModel):
     nachname = models.CharField(verbose_name="Nachname", max_length=128)
     email = models.EmailField(
         verbose_name="Email", help_text="Deine gültige EMail Adresse.",
-        #unique = True,
+        # unique = True,
     )
 
     kurs_wahl = models.ForeignKey(Kurs, verbose_name="Kurs Wahl", related_name='kurs_wahl')
@@ -81,7 +82,7 @@ class KursAnmeldung(UpdateInfoBaseModel):
     )
     matrikel_nr = models.PositiveIntegerField(
         verbose_name="Matrikel Nr.", help_text="Deine Matrikel Nummer",
-        #unique = True,
+        # unique = True,
     )
 
     laptop = models.BooleanField(
